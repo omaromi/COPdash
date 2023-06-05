@@ -52,7 +52,7 @@ df = get_data_to_df()
 
 st.sidebar.header("Filter by Partner")
 partnersource = st.sidebar.multiselect(
-    "Select your partner name:", options=big_df["A4"].unique(), default=big_df["A4"].unique())
+    "Select your partner name:", options=df["A4"].unique(), default=df["A4"].unique())
 
 # df = big_df.query("`A4` == @partnersource")
 
