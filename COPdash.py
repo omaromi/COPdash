@@ -96,7 +96,7 @@ salary_chart = df['Salary Name'].value_counts().reset_index().sort_index().renam
 interests_chart = df['Interest_primary_proper'].value_counts(
 ).sort_index().reset_index().rename(columns={'Interest_primary_proper': 'Number of Students', 'index': "Industry of Interest"})
 
-
+print(milestone_chart)
 # create plotly figs
 
 figure_1 = px.bar(milestone_chart.sort_values(by='Milestone'), y='Milestone', x='Number of Students', color='Milestone',
