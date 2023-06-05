@@ -44,7 +44,7 @@ def get_data_to_df():
     return df
 
 
-big_df = get_data_to_df()
+df = get_data_to_df()
 
 # All data created at this point
 # Milestone, Profile, Primary Interest, Top Drivers, Salary Expectations, Number of Experiences
@@ -54,7 +54,7 @@ st.sidebar.header("Filter by Partner")
 partnersource = st.sidebar.multiselect(
     "Select your partner name:", options=big_df["A4"].unique(), default=big_df["A4"].unique())
 
-df = big_df.query("`A4` == @partnersource")
+# df = big_df.query("`A4` == @partnersource")
 
 
 milestone_order = ['Clarity', 'Alignment',
