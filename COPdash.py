@@ -5,7 +5,8 @@ import streamlit as st
 import plotly.express as px
 from pyairtable import Table
 from decouple import config
-APIKEY = config('AIRTABLE_API_KEY')
+# APIKEY = config('AIRTABLE_API_KEY')
+APIKEY = st.secrets["AT_KEY"]
 
 # setting streamlit page configurations
 st.set_page_config(
