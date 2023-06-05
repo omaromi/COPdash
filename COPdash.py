@@ -85,13 +85,13 @@ profile_chart = df['User Profile Name'].value_counts().reset_index().rename(
     columns={'index': 'Clarity Profile',
              "User Profile Name": "Number of Students"}
 )
-profile_chart['Clarity Profile'] = profile_chart['Clarity Profile'].astype(
-    pf_type)
+# profile_chart['Clarity Profile'] = profile_chart['Clarity Profile'].astype(
+#     pf_type)
 
 salary_chart = df['Salary Name'].value_counts().reset_index().sort_index().rename(
     columns={'index': 'Salary Expectation', 'Salary Name': 'Number of Students'})
-salary_chart['Salary Expectation'] = salary_chart['Salary Expectation'].astype(
-    salary_type)
+# salary_chart['Salary Expectation'] = salary_chart['Salary Expectation'].astype(
+#     salary_type)
 
 interests_chart = df['Interest_primary_proper'].value_counts(
 ).sort_index().reset_index().rename(columns={'Interest_primary_proper': 'Number of Students', 'index': "Industry of Interest"})
