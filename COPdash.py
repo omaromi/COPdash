@@ -81,10 +81,7 @@ milestone_chart = df['Milestone Name'].value_counts().reset_index().rename(
 # milestone_chart['Milestone'] = milestone_chart['Milestone'].astype(ms_type)
 
 
-profile_chart = df['User Profile Name'].value_counts().reset_index().rename(
-    columns={'index': 'Clarity Profile',
-             "User Profile Name": "Number of Students"}
-)
+profile_chart = df['User Profile Name'].value_counts().reset_index()
 # profile_chart['Clarity Profile'] = profile_chart['Clarity Profile'].astype(
 #     pf_type)
 
