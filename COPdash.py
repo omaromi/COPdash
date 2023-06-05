@@ -78,7 +78,7 @@ salary_type = CategoricalDtype(categories=salary_order, ordered=True)
 milestone_chart = df['Milestone Name'].value_counts().reset_index().rename(
     columns={'index': 'Milestone', "Milestone Name": "Number of Students"}
 )
-milestone_chart['Milestone'] = milestone_chart['Milestone'].astype(ms_type)
+# milestone_chart['Milestone'] = milestone_chart['Milestone'].astype(ms_type)
 
 
 profile_chart = df['User Profile Name'].value_counts().reset_index().rename(
