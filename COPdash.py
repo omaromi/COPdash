@@ -117,6 +117,7 @@ fig_exp2 = px.histogram(df, x="A26 Count", nbins=14, title="14 bins exp")
 
 
 # # display via streamlit
+st.title("Seekr x Discovery Data Dashboard")
 
 st.markdown("Welcome to the Discovery Insights hub! This will be an important tool to guide the Discovery Community of Practice as you examine and discuss, in community, what has worked and what hasn't. Here, you will find data insights on students from your Host Site, and you will be able to compare their career readiness on an array of metrics to all students who've used Discovery across Basta's numerous and diverse Host Sites.")
 
