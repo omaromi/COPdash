@@ -62,7 +62,7 @@ gradyr = st.sidebar.multiselect(
     "Select your partner name:", options=big_df["Graduation_Year"].unique(), default=big_df["Graduation_Year"].unique())
 
 df = big_df.query(
-    "`Partner_Affiliation` == @partner && `Graduation_Year` == @gradyr")
+    "`Partner_Affiliation` == @partner")
 
 
 milestone_order = ['Clarity', 'Alignment',
