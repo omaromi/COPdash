@@ -80,11 +80,11 @@ salary_type = CategoricalDtype(categories=salary_order, ordered=True)
 
 milestone_chart = df['Milestone Name'].value_counts()
 
-profile_chart = df['User Profile Name'].value_counts()
+profile_chart = df['User Profile Name'].value_counts().sort_index()
 
 salary_chart = df['Salary Name'].value_counts()
 
-interests_chart = df['Interest_primary_proper'].value_counts()
+interests_chart = df['Interest_primary_proper'].value_counts().sort_index()
 myth_chart = df['Mythbeliever'].astype('float').value_counts()
 # interests_chart = df['Interest_primary_proper'].value_counts()
 
@@ -107,8 +107,8 @@ figure_2.update_layout(yaxis_title="Number of Students",
 figure_3 = px.bar(salary_chart,
                   x=salary_chart.index, y=salary_chart, color=salary_chart.index)
 
-figure_4 = px.bar(interests_chart.sort_index(),
-                  x=interests_chart.index, y=interests_chart, color=interests_chart.index)
+figure_4 = px.bar(interests_chart,
+                  y=interests_chart.index, x=interests_chart, color=interests_chart.index)
 
 figure_5 = px.bar(myth_chart)
 
@@ -118,13 +118,20 @@ fig_exp2 = px.histogram(df, x="A26 Count", nbins=14, title="14 bins exp")
 
 # # display via streamlit
 
+st.markdown("Welcome to the Discovery Insights hub! This will be an important tool to guide the Discovery Community of Practice as you examine and discuss, in community, what has worked and what hasn't. Here, you will find data insights on students from your Host Site, and you will be able to compare their career readiness on an array of metrics to all students who've used Discovery across Basta's numerous and diverse Host Sites.")
+
 st.metric(label="Number of Seekr Takers", value=df.shape[0])
 
 
 st.plotly_chart(figure_1, use_container_width=True)
 st.plotly_chart(figure_2, use_container_width=True)
+st.markdown("Clarity profiles offer even more nuance on where a student is on the pathway to a great first job, and empowers practitioners to give tailored guidance to help a student increase their clarity about their job search goals.")
+
 st.plotly_chart(figure_3, use_container_width=True)
+st.markdown("Salary expectations are what people expect to earn in salary from a first job, and are often a source of misalignment between what they hope to earn and the first job they are striving for. ")
 st.plotly_chart(figure_4, use_container_width=True)
+st.markdown("This is a breakdown of the self-reported career interests of people who took the Seekr survey. The industry of interest they chose is the industry they want to land a first job in.")
+
 st.plotly_chart(figure_5, use_container_width=True)
 st.plotly_chart(fig_exp1, use_container_width=True)
 st.plotly_chart(fig_exp2, use_container_width=True)
