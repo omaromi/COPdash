@@ -1,3 +1,4 @@
 .env
 dashboard.ipynb
+fakedash.ipynb
 .streamlit/secrets.toml

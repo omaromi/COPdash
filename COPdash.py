@@ -44,7 +44,7 @@ def get_data_to_df():
     return df
 
 
-df = get_data_to_df()
+big_df = get_data_to_df()
 
 # All data created at this point
 # Milestone, Profile, Primary Interest, Top Drivers, Salary Expectations, Number of Experiences
@@ -52,9 +52,9 @@ df = get_data_to_df()
 
 st.sidebar.header("Filter by Partner")
 partnersource = st.sidebar.multiselect(
-    "Select your partner name:", options=df["A4"].unique(), default=df["A4"].unique())
+    "Select your partner name:", options=big_df["A4"].unique(), default=big_df["A4"].unique())
 
-# df = big_df.query("`A4` == @partnersource")
+df = big_df.query("`A4` == @partnersource")
 
 
 milestone_order = ['Clarity', 'Alignment',
@@ -75,55 +75,56 @@ salary_type = CategoricalDtype(categories=salary_order, ordered=True)
 # create data for mini-charts
 
 
-milestone_chart = df['Milestone Name'].value_counts().reset_index().rename(
-    columns={'index': 'Milestone', "Milestone Name": "Number of Students"}
-)
+milestone_chart = df['Milestone Name'].value_counts()
 # milestone_chart['Milestone'] = milestone_chart['Milestone'].astype(ms_type)
 
 
-profile_chart = df['User Profile Name'].value_counts().reset_index()
+profile_chart = df['User Profile Name'].value_counts()
 # profile_chart['Clarity Profile'] = profile_chart['Clarity Profile'].astype(
 #     pf_type)
 
-salary_chart = df['Salary Name'].value_counts().reset_index().sort_index().rename(
-    columns={'index': 'Salary Expectation', 'Salary Name': 'Number of Students'})
+salary_chart = df['Salary Name'].value_counts()
 # salary_chart['Salary Expectation'] = salary_chart['Salary Expectation'].astype(
 #     salary_type)
 
-interests_chart = df['Interest_primary_proper'].value_counts(
-).sort_index().reset_index().rename(columns={'Interest_primary_proper': 'Number of Students', 'index': "Industry of Interest"})
+interests_chart = df['Interest_primary_proper'].value_counts()
 
 print(milestone_chart)
 print(interests_chart)
 print(profile_chart)
 # create plotly figs
 
-figure_1 = px.bar(milestone_chart.sort_values(by='Milestone'), y='Milestone', x='Number of Students', color='Milestone',
-                  color_discrete_map={
-                      'Clarity': "#00A3E1", 'Alignment': "#85C540",
-                      'Search Strategy': "#D04D9D", 'Interviewing & Advancing': "#FFC507"})
+figure_1 = px.bar(milestone_chart, y=milestone_chart.index, x=milestone_chart, color=milestone_chart.index, color_discrete_map={
+    'Clarity': "#00A3E1", 'Alignment': "#85C540",
+    'Search Strategy': "#D04D9D", 'Interviewing & Advancing': "#FFC507"})
+figure_1.update_layout(
+    yaxis_title="Number of Students", xaxis_title="Milestone"
+)
 
-figure_2 = px.bar(profile_chart.sort_values(by='Clarity Profile'),
-                  x='Clarity Profile', y='Number of Students')
+figure_2 = px.bar(profile_chart.sort_index(),
+                  x=profile_chart.index, y=profile_chart, color=profile_chart.index)
+figure_2.update_layout(yaxis_title="Number of Students",
+                       xaxis_title="Profile")
+print(profile_chart)
 
-figure_3 = px.bar(salary_chart.sort_values(by="Salary Expectation"),
-                  x="Salary Expectation", y="Number of Students", color='Salary Expectation')
+# figure_3 = px.bar(salary_chart.sort_values(by="Salary Expectation"),
+#                   x="Salary Expectation", y="Number of Students", color='Salary Expectation')
 
-figure_4 = px.bar(interests_chart, y='Industry of Interest',
-                  x='Number of Students', color='Industry of Interest')
+# figure_4 = px.bar(interests_chart, y='Industry of Interest',
+#                   x='Number of Students', color='Industry of Interest')
 
-fig_exp1 = px.histogram(df, x="A26 Count", nbins=6, title="6 bins exp")
-fig_exp2 = px.histogram(df, x="A26 Count", nbins=4, title="4 bins exp")
+# fig_exp1 = px.histogram(df, x="A26 Count", nbins=6, title="6 bins exp")
+# fig_exp2 = px.histogram(df, x="A26 Count", nbins=4, title="4 bins exp")
 
 
-# display via streamlit
+# # display via streamlit
 
-st.metric(label="Number of Seekr Takers", value=df.shape[0])
+# st.metric(label="Number of Seekr Takers", value=df.shape[0])
 
 
 st.plotly_chart(figure_1, use_container_width=True)
 st.plotly_chart(figure_2, use_container_width=True)
-st.plotly_chart(figure_3, use_container_width=True)
-st.plotly_chart(figure_4, use_container_width=True)
-st.plotly_chart(fig_exp1, use_container_width=True)
-st.plotly_chart(fig_exp2, use_container_width=True)
+# st.plotly_chart(figure_3, use_container_width=True)
+# st.plotly_chart(figure_4, use_container_width=True)
+# st.plotly_chart(fig_exp1, use_container_width=True)
+# st.plotly_chart(fig_exp2, use_container_width=True)
