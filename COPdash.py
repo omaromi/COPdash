@@ -57,7 +57,12 @@ st.sidebar.header("Filter by Partner")
 partner = st.sidebar.multiselect(
     "Select your partner name:", options=big_df["Partner_Affiliation"].unique(), default=big_df["Partner_Affiliation"].unique())
 
-df = big_df.query("`Partner_Affiliation` == @partner")
+st.sidebar.header("Filter by Year")
+gradyr = st.sidebar.multiselect(
+    "Select your partner name:", options=big_df["Graduation_Year"].unique(), default=big_df["Graduation_Year"].unique())
+
+df = big_df.query(
+    "`Partner_Affiliation` == @partner && `Graduation_Year` == @gradyr")
 
 
 milestone_order = ['Clarity', 'Alignment',
@@ -112,6 +117,9 @@ figure_4 = px.bar(interests_chart,
 
 figure_5 = px.bar(myth_chart)
 
+figure_6 = px.histogram(df, x='Mythbeliever', nbins=5,
+                        title="alt to myth chart above")
+
 fig_exp1 = px.histogram(df, x="A26 Count", nbins=6, title="6 bins exp")
 fig_exp2 = px.histogram(df, x="A26 Count", nbins=14, title="14 bins exp")
 
@@ -134,5 +142,8 @@ st.plotly_chart(figure_4, use_container_width=True)
 st.markdown("This is a breakdown of the self-reported career interests of people who took the Seekr survey. The industry of interest they chose is the industry they want to land a first job in.")
 
 st.plotly_chart(figure_5, use_container_width=True)
+st.plotly_chart(figure_6, use_container_width=True)
+
+
 st.plotly_chart(fig_exp1, use_container_width=True)
 st.plotly_chart(fig_exp2, use_container_width=True)
