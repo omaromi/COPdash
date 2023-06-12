@@ -55,14 +55,14 @@ big_df = pd.read_csv('compiled.csv')
 
 st.sidebar.header("Filter by Partner")
 partner = st.sidebar.multiselect(
-    "Select your partner name:", options=big_df["Partner_Affiliation"].unique(), default=big_df["Partner_Affiliation"].unique())
+    "Select your partner name:", options=big_df["Partner_Affiliation"].unique(), default=sorted(big_df["Partner_Affiliation"].unique()))
 
 st.sidebar.header("Filter by Year")
 gradyr = st.sidebar.multiselect(
     "Select your partner name:", options=big_df["Graduation_Year"].unique(), default=big_df["Graduation_Year"].unique())
 
 df = big_df.query(
-    "`Partner_Affiliation` == @partner")
+    "`Partner_Affiliation` == @partner & `Graduation_Year` == @gradyr")
 
 
 milestone_order = ['Clarity', 'Alignment',
@@ -102,11 +102,14 @@ figure_1 = px.bar(milestone_chart, y=milestone_chart.index, x=milestone_chart, c
 figure_1.update_layout(
     xaxis_title="Number of Students", yaxis_title="Milestone"
 )
+print(pd.__version__)
 
 figure_2 = px.bar(profile_chart,
                   x=profile_chart.index, y=profile_chart, color=profile_chart.index)
 figure_2.update_layout(yaxis_title="Number of Students",
                        xaxis_title="Profile")
+
+# figure_6 = 
 
 
 figure_3 = px.bar(salary_chart,
