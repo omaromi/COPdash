@@ -195,13 +195,15 @@ with col1:
     st.metric(label="Students with highest confidence in their interest",value=high_conf)
 
 with col2:
-    st.markdown("### Clarity Profiles ")
+    st.markdown("### Clarity Profiles")
     st.plotly_chart(figure_2, use_container_width=True)
     st.markdown("Clarity profiles offer even more nuance on where a student is on the pathway to a great first job, and empowers practitioners to give tailored guidance to help a student increase their clarity about their job search goals.")
 
-st.markdown("Salary Expectations")
+st.markdown("### Salary Expectations")
 st.plotly_chart(figure_3, use_container_width=True)
 st.markdown("Salary expectations are what people expect to earn in salary from a first job, and are often a source of misalignment between what they hope to earn and the first job they are striving for. ")
+
+st.markdown("### Industry of Interest")
 st.plotly_chart(figure_4, use_container_width=True)
 st.markdown("This is a breakdown of the self-reported career interests of people who took the Seekr survey. The industry of interest they chose is the industry they want to land a first job in.")
 
@@ -210,6 +212,6 @@ st.markdown("This is a breakdown of the self-reported career interests of people
 # st.plotly_chart(figure_5, use_container_width=True)
 # st.plotly_chart(figure_6, use_container_width=True)
 
-
+st.markdown("### Industry of Interest")
 st.plotly_chart(fig_exper, use_container_width=True)
 # st.plotly_chart(fig_exp2, use_container_width=True)
