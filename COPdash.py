@@ -212,6 +212,6 @@ st.markdown("This is a breakdown of the self-reported career interests of people
 # st.plotly_chart(figure_5, use_container_width=True)
 # st.plotly_chart(figure_6, use_container_width=True)
 
-st.markdown("### Industry of Interest")
+st.markdown("### Number of Experiences")
 st.plotly_chart(fig_exper, use_container_width=True)
 # st.plotly_chart(fig_exp2, use_container_width=True)
