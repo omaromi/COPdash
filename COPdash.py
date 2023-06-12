@@ -49,26 +49,32 @@ st.set_page_config(
 
 big_df = pd.read_csv('compiled.csv')
 
-# All data created at this point
-# Milestone, Profile, Primary Interest, Top Drivers, Salary Expectations, Number of Experiences
-# Grad Year, Myth Believer
-
-st.sidebar.header("Filter by Partner")
-partner = st.sidebar.multiselect(
-    "Select your partner name:", options=big_df["Partner_Affiliation"].unique(), default=sorted(big_df["Partner_Affiliation"].unique()))
-
-st.sidebar.header("Filter by Year")
-gradyr = st.sidebar.multiselect(
-    "Select your partner name:", options=big_df["Graduation_Year"].unique(), default=big_df["Graduation_Year"].unique())
-
-df = big_df.query(
-    "`Partner_Affiliation` == @partner & `Graduation_Year` == @gradyr")
+big_df['Archetypes'] = big_df['User Profile Name'].map(
+    {
+        'WF1': "Disinterested",
+        'WF2': "Self-Conscious",
+        'WF3': "Distracted",
+        'WF4': "Disinterested",
+        'WF5': "Self-Conscious",
+        'WF6': "Distracted",
+        'WF7': "Potentially Misled",
+        'WF8': "Potentially Misled",
+        'WF9': "Intuitive",
+        'WF10': "Passed Clarity",
+        'WF11': "Adamant",
+        'WF12': "Adamant",
+        'WF13': "Intuitive",
+        'WF14': "Passed Clarity",
+    }
+)
 
 
 milestone_order = ['Clarity', 'Alignment',
                    'Search Strategy', 'Interviewing & Advancing', ]
 pf_order = ['WF1', 'WF2', 'WF3', 'WF4', 'WF5', 'WF6', 'WF7',
             'WF8', 'WF9', 'WF10', 'WF11', 'WF12', 'WF13', 'WF14']
+
+archetype_order = ["Disinterested", "Self-Conscious","Distracted", "Potentially Misled","Intuitive","Adamant","Passed Clarity"]
 salary_order = ["Honestly, I haven't thought about this",
                 "Less than $40,000",
                 "Between $40,000 and $59,999",
@@ -79,24 +85,64 @@ salary_order = ["Honestly, I haven't thought about this",
 ms_type = CategoricalDtype(categories=milestone_order, ordered=True)
 pf_type = CategoricalDtype(categories=pf_order, ordered=True)
 salary_type = CategoricalDtype(categories=salary_order, ordered=True)
+arc_type = CategoricalDtype(categories=archetype_order, ordered=True)
+
+big_df['Milestone Name'] = big_df['Milestone Name'].astype(ms_type)
+big_df['User Profile Name'] = big_df['User Profile Name'].astype(pf_type)
+big_df['Archetypes'] = big_df['Archetypes'].astype(arc_type)
+big_df['Salary Name'] = big_df['Salary Name'].astype(salary_type)
+
+# All data created at this point
+# Milestone, Profile, Primary Interest, Top Drivers, Salary Expectations, Number of Experiences
+# Grad Year, Myth Believer
+
+st.sidebar.header("Filter by Partner")
+partner = st.sidebar.multiselect(
+    "Select your partner name:", options=big_df["Partner_Affiliation"].unique(), default=sorted(big_df["Partner_Affiliation"].unique()))
+
+st.sidebar.header("Filter by Year")
+gradyr = st.sidebar.multiselect(
+    "Select your partner name:", options=big_df["Graduation_Year"].unique(), default=sorted(big_df["Graduation_Year"].unique()))
+
+df = big_df.query(
+    "`Partner_Affiliation` == @partner & `Graduation_Year` == @gradyr")
+
+
+# milestone_order = ['Clarity', 'Alignment',
+#                    'Search Strategy', 'Interviewing & Advancing', ]
+# pf_order = ['WF1', 'WF2', 'WF3', 'WF4', 'WF5', 'WF6', 'WF7',
+#             'WF8', 'WF9', 'WF10', 'WF11', 'WF12', 'WF13', 'WF14']
+# salary_order = ["Honestly, I haven't thought about this",
+#                 "Less than $40,000",
+#                 "Between $40,000 and $59,999",
+#                 "Between $60,000 and $79,999",
+#                 "Between $80,000 and $99,999",
+#                 "$100,000 +"]
+
+# ms_type = CategoricalDtype(categories=milestone_order, ordered=True)
+# pf_type = CategoricalDtype(categories=pf_order, ordered=True)
+# salary_type = CategoricalDtype(categories=salary_order, ordered=True)
 
 
 # create data for mini-charts
 
-milestone_chart = df['Milestone Name'].value_counts()
+m = df['Milestone Name'].value_counts().sort_index()
 
-profile_chart = df['User Profile Name'].value_counts().sort_index()
+arc = df['Archetypes'].value_counts().sort_index()
 
-salary_chart = df['Salary Name'].value_counts()
+s = df['Salary Name'].value_counts().sort_index()
 
-interests_chart = df['Interest_primary_proper'].value_counts().sort_index()
-myth_chart = df['Mythbeliever'].astype('float').value_counts()
-# interests_chart = df['Interest_primary_proper'].value_counts()
+i = df['Interest_primary_proper'].value_counts().sort_index()
+
+
+myth = round(100 * df.loc[df['Mythbeliever']>3]['Mythbeliever'].count() / df['Mythbeliever'].count())
+high_conf = df.loc[df['User Profile Name'].isin(['WF11', 'WF12', 'WF13', 'WF14'])]['User Profile Name'].count()
+# i = df['Interest_primary_proper'].value_counts()
 
 
 # create plotly figs
 
-figure_1 = px.bar(milestone_chart, y=milestone_chart.index, x=milestone_chart, color=milestone_chart.index, color_discrete_map={
+figure_1 = px.bar(m, y=m.index, x=m, color=m.index, color_discrete_map={
     'Clarity': "#00A3E1", 'Alignment': "#85C540",
     'Search Strategy': "#D04D9D", 'Interviewing & Advancing': "#FFC507"})
 figure_1.update_layout(
@@ -104,27 +150,27 @@ figure_1.update_layout(
 )
 print(pd.__version__)
 
-figure_2 = px.bar(profile_chart,
-                  x=profile_chart.index, y=profile_chart, color=profile_chart.index)
+figure_2 = px.bar(arc,
+                  x=arc.index, y=arc, color=arc.index)
 figure_2.update_layout(yaxis_title="Number of Students",
                        xaxis_title="Profile")
 
 # figure_6 = 
 
 
-figure_3 = px.bar(salary_chart,
-                  x=salary_chart.index, y=salary_chart, color=salary_chart.index)
+figure_3 = px.bar(s,
+                  x=s.index, y=s, color=s.index)
+figure_3.update_layout(yaxis_title="Number of Students")
 
-figure_4 = px.bar(interests_chart,
-                  y=interests_chart.index, x=interests_chart, color=interests_chart.index)
+figure_4 = px.bar(i,
+                  y=i.index, x=i, color=i.index)
 
-figure_5 = px.bar(myth_chart)
+# figure_5 = px.bar(myth)
 
-figure_6 = px.histogram(df, x='Mythbeliever', nbins=5,
-                        title="alt to myth chart above")
+# figure_6 = px.histogram(df, x='Mythbeliever', nbins=5,
+#                         title="alt to myth chart above")
 
-fig_exp1 = px.histogram(df, x="A26 Count", nbins=6, title="6 bins exp")
-fig_exp2 = px.histogram(df, x="A26 Count", nbins=14, title="14 bins exp")
+fig_exper = px.histogram(df, x="A26 Count", nbins=6)
 
 
 # # display via streamlit
@@ -132,21 +178,38 @@ st.title("Seekr x Discovery Data Dashboard")
 
 st.markdown("Welcome to the Discovery Insights hub! This will be an important tool to guide the Discovery Community of Practice as you examine and discuss, in community, what has worked and what hasn't. Here, you will find data insights on students from your Host Site, and you will be able to compare their career readiness on an array of metrics to all students who've used Discovery across Basta's numerous and diverse Host Sites.")
 
-st.metric(label="Number of Seekr Takers", value=df.shape[0])
+cola, colb = st.columns([3,9])
 
+with cola:
+    st.subheader("Number of Seekr Takers")
+    st.metric(label="",value=f"{df.shape[0]} Students")
 
-st.plotly_chart(figure_1, use_container_width=True)
-st.plotly_chart(figure_2, use_container_width=True)
-st.markdown("Clarity profiles offer even more nuance on where a student is on the pathway to a great first job, and empowers practitioners to give tailored guidance to help a student increase their clarity about their job search goals.")
+with colb:
+    st.markdown("### Milestone Distribution")
+    st.plotly_chart(figure_1, use_container_width=True)
 
+col1,col2 = st.columns([3,9])
+with col1:
+    st.metric(label="Percent of your students believe too many myths",value=f"{myth} %")
+    st.metric(label="Students without an identified interest yet",value=df['Interest_primary_proper'].isna().sum())
+    st.metric(label="Students with highest confidence in their interest",value=high_conf)
+
+with col2:
+    st.markdown("### Clarity Profiles ")
+    st.plotly_chart(figure_2, use_container_width=True)
+    st.markdown("Clarity profiles offer even more nuance on where a student is on the pathway to a great first job, and empowers practitioners to give tailored guidance to help a student increase their clarity about their job search goals.")
+
+st.markdown("Salary Expectations")
 st.plotly_chart(figure_3, use_container_width=True)
 st.markdown("Salary expectations are what people expect to earn in salary from a first job, and are often a source of misalignment between what they hope to earn and the first job they are striving for. ")
 st.plotly_chart(figure_4, use_container_width=True)
 st.markdown("This is a breakdown of the self-reported career interests of people who took the Seekr survey. The industry of interest they chose is the industry they want to land a first job in.")
 
-st.plotly_chart(figure_5, use_container_width=True)
-st.plotly_chart(figure_6, use_container_width=True)
+
+# st.metric(label="Percent of students who believe too many myths",value=myth)
+# st.plotly_chart(figure_5, use_container_width=True)
+# st.plotly_chart(figure_6, use_container_width=True)
 
 
-st.plotly_chart(fig_exp1, use_container_width=True)
-st.plotly_chart(fig_exp2, use_container_width=True)
+st.plotly_chart(fig_exper, use_container_width=True)
+# st.plotly_chart(fig_exp2, use_container_width=True)
