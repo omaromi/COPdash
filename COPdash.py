@@ -47,7 +47,7 @@ st.set_page_config(
 
 # big_df = get_data_to_df()
 
-big_df = pd.read_csv('compiled.csv')
+big_df = pd.read_csv('MPPplusD2S.csv')
 
 big_df['Archetypes'] = big_df['User Profile Name'].map(
     {
