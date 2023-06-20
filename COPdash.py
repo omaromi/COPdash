@@ -78,7 +78,7 @@ milestone_order = ['Clarity', 'Alignment',
 pf_order = ['WF1', 'WF2', 'WF3', 'WF4', 'WF5', 'WF6', 'WF7',
             'WF8', 'WF9', 'WF10', 'WF11', 'WF12', 'WF13', 'WF14']
 
-archetype_order = ["Disinterested", "Self-Conscious","Distracted", "Potentially Misled","Intuitive","Adamant","Passed Clarity"]
+archetype_order = ["Disinterested", "Self-Conscious","Distracted", "Tentative","Intuitive","Adamant","Passed Clarity"]
 salary_order = ["Honestly, I haven't thought about this",
                 "Less than $40,000",
                 "Between $40,000 and $59,999",
