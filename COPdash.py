@@ -68,6 +68,10 @@ big_df['Archetypes'] = big_df['User Profile Name'].map(
     }
 )
 
+big_df['Graduation_Year'].replace({"20267":"2026",
+                                   "After 2025":"2026",
+                                   "Before 2018":"2017"},inplace=True)
+
 
 milestone_order = ['Clarity', 'Alignment',
                    'Search Strategy', 'Interviewing & Advancing', ]
@@ -96,13 +100,14 @@ big_df['Salary Name'] = big_df['Salary Name'].astype(salary_type)
 # Milestone, Profile, Primary Interest, Top Drivers, Salary Expectations, Number of Experiences
 # Grad Year, Myth Believer
 
+st.sidebar.success("select page above")
 st.sidebar.header("Filter by Partner")
 partner = st.sidebar.multiselect(
     "Select your partner name:", options=big_df["Partner_Affiliation"].unique(), default=sorted(big_df["Partner_Affiliation"].unique()))
 
 st.sidebar.header("Filter by Year")
 gradyr = st.sidebar.multiselect(
-    "Select your partner name:", options=big_df["Graduation_Year"].unique(), default=sorted(big_df["Graduation_Year"].unique()))
+    "Select student college graduation year:", options=big_df["Graduation_Year"].unique(), default=sorted(big_df["Graduation_Year"].unique()))
 
 df = big_df.query(
     "`Partner_Affiliation` == @partner & `Graduation_Year` == @gradyr")
@@ -134,36 +139,43 @@ s = df['Salary Name'].value_counts().sort_index()
 
 i = df['Interest_primary_proper'].value_counts().sort_index()
 
-
-myth = round(100 * df.loc[df['Mythbeliever']>3]['Mythbeliever'].count() / df['Mythbeliever'].count())
-high_conf = df.loc[df['User Profile Name'].isin(['WF11', 'WF12', 'WF13', 'WF14'])]['User Profile Name'].count()
+denom = df['Response ID'].count()
+myth = round(100 * df.loc[df['Mythbeliever']>3]['Mythbeliever'].count() / denom)
+high_conf = round( 100* df.loc[df['User Profile Name'].isin(['WF11', 'WF12', 'WF13', 'WF14'])]['User Profile Name'].count() / denom)
+nointerest = round(100 * df['Interest_primary_proper'].isna().sum() / denom)
+claritypct = round(100* df.loc[df['Milestone Name'] == "Clarity"]['Milestone Name'].count() / denom)
 # i = df['Interest_primary_proper'].value_counts()
 
 
 # create plotly figs
 
-figure_1 = px.bar(m, y=m.index, x=m, color=m.index, color_discrete_map={
+figure_1 = px.bar(m, y=m.index, x=m, title="Milestone",color=m.index, color_discrete_map={
     'Clarity': "#00A3E1", 'Alignment': "#85C540",
     'Search Strategy': "#D04D9D", 'Interviewing & Advancing': "#FFC507"})
 figure_1.update_layout(
-    xaxis_title="Number of Students", yaxis_title="Milestone"
+    xaxis_title="Number of Students", yaxis_title="Milestone",showlegend=False
 )
 print(pd.__version__)
 
 figure_2 = px.bar(arc,
-                  x=arc.index, y=arc, color=arc.index)
+                  x=arc.index, y=arc, color=arc.index,title="Clarity Archetypes")
 figure_2.update_layout(yaxis_title="Number of Students",
-                       xaxis_title="Profile")
+                       xaxis_title="Archetype",
+                       showlegend=False)
 
 # figure_6 = 
 
 
 figure_3 = px.bar(s,
-                  x=s.index, y=s, color=s.index)
-figure_3.update_layout(yaxis_title="Number of Students")
+                  x=s.index, y=s, color=s.index,title="Salary Expectations")
+figure_3.update_layout(yaxis_title="Number of Students",
+                       xaxis_title="Salary Range",
+                       showlegend=False)
 
 figure_4 = px.bar(i,
                   y=i.index, x=i, color=i.index)
+figure_4.update_layout(yaxis_title="Career Interest",xaxis_title="Number of Students",showlegend=False)
+
 
 # figure_5 = px.bar(myth)
 
@@ -171,47 +183,101 @@ figure_4 = px.bar(i,
 #                         title="alt to myth chart above")
 
 fig_exper = px.histogram(df, x="A26 Count", nbins=6)
+fig_exper.update_layout(yaxis_title="Number of Students",xaxis_title="Number of Experiences",showlegend=False)
+
 
 
 # # display via streamlit
 st.title("Seekr x Discovery Data Dashboard")
 
-st.markdown("Welcome to the Discovery Insights hub! This will be an important tool to guide the Discovery Community of Practice as you examine and discuss, in community, what has worked and what hasn't. Here, you will find data insights on students from your Host Site, and you will be able to compare their career readiness on an array of metrics to all students who've used Discovery across Basta's numerous and diverse Host Sites.")
+st.subheader("Welcome to the Discovery Data Dashboard! In your Community of Practice, use this tool to explore through our data and learn about your student community.")
 
-cola, colb = st.columns([3,9])
 
-with cola:
-    st.subheader("Number of Seekr Takers")
-    st.metric(label="",value=f"{df.shape[0]} Students")
+
+cola, colb = st.columns([8,4])
 
 with colb:
-    st.markdown("### Milestone Distribution")
+    # st.subheader("Number of Seekr Takers")
+    # st.metric(label="",value=f"{df.shape[0]} Students")
+    st.markdown("### Milestone")
+    st.markdown(f"When you host a resume workshop or mock interviews, you are serving a minority of students. {claritypct}% of your student land at Clarity and are simply not ready to benefit from that kind of programming.")
+
+with cola:
+    
     st.plotly_chart(figure_1, use_container_width=True)
 
-col1,col2 = st.columns([3,9])
-with col1:
-    st.metric(label="Percent of your students believe too many myths",value=f"{myth} %")
-    st.metric(label="Students without an identified interest yet",value=df['Interest_primary_proper'].isna().sum())
-    st.metric(label="Students with highest confidence in their interest",value=high_conf)
-
+col1,col2 = st.columns([8,4])
 with col2:
-    st.markdown("### Clarity Profiles")
+    st.markdown("### Clarity Archetypes")
+    st.markdown("""
+        We identified 6 archetypes of students at Clarity. We use this information to provide tailored guidance and a highly personalized experience to each student. Each student needs something different on their Milestones journey.
+    """)
+    with st.expander("Learn more about the archetypes"):
+        st.markdown("""
+        Disinterested: This student hasn't found any interesting career options. This might be due to not knowing about enough industries, not having enough experience, or a general lack of interest in their career overall.   
+
+        Self-Conscious: This student is most concerned with their own qualifications. They might not know the available career paths for their skillset or they might not feel qualified enough to pursue their real interest.  
+
+        Distracted: This student is interested in many career options and is struggling to pick just one. They might have multiple passions and are trying to pursue them all at once. Or maybe they're paralyzed by the possibilities.    
+
+        Tentative: This student has a career interest but we're concerned they might be making an uninformed decision. They haven't demonstrated enough exposure and they aren't overly committed to their interest.  
+        
+        Intuitive: This student is probably pursuing the right field but they're unable to articulate strong reasons for their interest. In digging deeper, students sometimes discover buried passions.  
+
+        Adamant: This student is highly confident and committed to their interest but don't have enough exposure. We're concerned they're making an uninformed decision. We address this carefully without hurting their aspirations.  
+        """)
+
+with col1:
     st.plotly_chart(figure_2, use_container_width=True)
-    st.markdown("Clarity profiles offer even more nuance on where a student is on the pathway to a great first job, and empowers practitioners to give tailored guidance to help a student increase their clarity about their job search goals.")
 
-st.markdown("### Salary Expectations")
-st.plotly_chart(figure_3, use_container_width=True)
-st.markdown("Salary expectations are what people expect to earn in salary from a first job, and are often a source of misalignment between what they hope to earn and the first job they are striving for. ")
+st.write("---")
+colu1,colu2,colu3,colu4 = st.columns(4)
 
-st.markdown("### Industry of Interest")
-st.plotly_chart(figure_4, use_container_width=True)
-st.markdown("This is a breakdown of the self-reported career interests of people who took the Seekr survey. The industry of interest they chose is the industry they want to land a first job in.")
+with colu1:
+    st.subheader("Number of Seekr Takers")
+    st.metric(label="",value=f"{df.shape[0]} Students")
+with colu2:
+    st.subheader("Mythbelievers")
+    st.metric(label="",value=f"{myth} %")
+    st.markdown("Students who believe a few too many myths about the job search, like thinking they can only apply to jobs related to their major.")
+with colu3:
+    st.subheader("No Interest")
+    st.metric(label="",value=f"{nointerest} %")
+    st.markdown("Students who haven't yet identified a career interest.")
+
+with colu4:
+    st.subheader("Found Passion")
+    st.metric(label="",value=f"{high_conf} %")
+    st.markdown("Students who are extremely confident they know what career field they want to pursue.")
+    
+st.write("---")
+colx, coly = st.columns([8,4])
+
+with colx:
+    st.markdown("### Industry of Interest")
+    st.plotly_chart(figure_4, use_container_width=True)
+
+with coly:
+    st.markdown("The field a student wants their first job in is considered their Industry of Interest. Below are these students' top 5 interests.")
+    st.write(i.sort_values(ascending=False).head(5))
 
 
-# st.metric(label="Percent of students who believe too many myths",value=myth)
-# st.plotly_chart(figure_5, use_container_width=True)
-# st.plotly_chart(figure_6, use_container_width=True)
+st.write("---")
+colua,colub = st.columns([8,4])
 
-st.markdown("### Number of Experiences")
-st.plotly_chart(fig_exper, use_container_width=True)
-# st.plotly_chart(fig_exp2, use_container_width=True)
+with colua:
+    st.plotly_chart(figure_3, use_container_width=True)
+
+with colub:
+    st.markdown("### Salary Expectations")
+    st.markdown("Salary expectations show us what salary range students are looking for in a first job. This is a common source of misalignment between their interest and what a realistic salary in that industry can be.")
+
+
+colux,coluy = st.columns([8,4])
+
+with coluy:
+    st.markdown("### Number of Experiences")
+    st.markdown("We define an experience as any work or volunteer experience longer than 6 months. Most students list that they've had 2-3 experiences but we suspect that they're still undercounting what they've done.")
+
+with colux:
+    st.plotly_chart(fig_exper, use_container_width=True)

@@ -2,9 +2,14 @@
 dashboard.ipynb
 fakedash.ipynb
 createdataset.ipynb
+printpng.ipynb
 test.ipynb
 2301+-+Discovery+for+MultiPartner+Students_June+6,+2023_00.15.csv
 2301+-+Discovery+for+Direct-to-Student_June+13,+2023_16.19.csv
 compiledD2S-1.csv
 compiledD2S.csv
 .streamlit/secrets.toml
+archetype.png
+salary_fig.png
+interest_fig.png
+Milestone distribution.png
