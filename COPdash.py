@@ -157,9 +157,9 @@ figure_1.update_layout(
 print(pd.__version__)
 
 figure_2 = px.bar(arc,
-                  x=arc.index, y=arc, color=arc.index,title="Clarity Archetypes")
+                  x=arc.index, y=arc, color=arc.index,title="Clarity Profiles")
 figure_2.update_layout(yaxis_title="Number of Students",
-                       xaxis_title="Archetype",
+                       xaxis_title="Profile",
                        showlegend=False)
 
 # figure_6 = 
@@ -207,11 +207,11 @@ with cola:
 
 col1,col2 = st.columns([8,4])
 with col2:
-    st.markdown("### Clarity Archetypes")
+    st.markdown("### Clarity Profiles")
     st.markdown("""
-        We identified 6 archetypes of students at Clarity. We use this information to provide tailored guidance and a highly personalized experience to each student. Each student needs something different on their Milestones journey.
+        We identified 6 profiles of students at Clarity. We use this information to provide tailored guidance and a highly personalized experience to each student. Each student needs something different on their Milestones journey.
     """)
-    with st.expander("Learn more about the archetypes"):
+    with st.expander("Learn more about the profiles"):
         st.markdown("""
         Disinterested: This student hasn't found any interesting career options. This might be due to not knowing about enough industries, not having enough experience, or a general lack of interest in their career overall.   
 
