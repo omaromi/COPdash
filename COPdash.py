@@ -100,7 +100,6 @@ big_df['Salary Name'] = big_df['Salary Name'].astype(salary_type)
 # Milestone, Profile, Primary Interest, Top Drivers, Salary Expectations, Number of Experiences
 # Grad Year, Myth Believer
 
-st.sidebar.success("select page above")
 st.sidebar.header("Filter by Partner")
 partner = st.sidebar.multiselect(
     "Select your partner name:", options=big_df["Partner_Affiliation"].unique(), default=sorted(big_df["Partner_Affiliation"].unique()))
